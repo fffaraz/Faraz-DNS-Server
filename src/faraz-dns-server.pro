@@ -16,7 +16,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    server.cpp
+    server.cpp \
+    dns.cpp
 
 HEADERS += \
-    server.h
+    server.h \
+    dns.h

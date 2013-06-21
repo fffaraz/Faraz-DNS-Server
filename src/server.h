@@ -6,6 +6,8 @@
 #include <QHostAddress>
 #include <QUdpSocket>
 
+#include "dns.h"
+
 class Server : public QObject
 {
     Q_OBJECT
