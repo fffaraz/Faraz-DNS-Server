@@ -10,3 +10,5 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+
+// nslookup -q=a -debug google.com 127.0.0.1

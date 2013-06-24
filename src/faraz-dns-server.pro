@@ -21,4 +21,5 @@ SOURCES += main.cpp \
 
 HEADERS += \
     server.h \
-    dns.h
+    dns.h \
+    dns_packet.h
