@@ -4,6 +4,21 @@ DNS::DNS()
 {
 }
 
+void DNS::process(QByteArray &datagram)
+{
+    QString domain = getName(datagram, 12, 0);
+    domain = domain.toLower();
+    quint32 ip;
+
+    if(domain == "google.com.")
+        ip = QHostAddress("8.8.8.8").toIPv4Address();
+    else
+        ip = QHostAddress("127.0.0.1").toIPv4Address();
+
+    addArecordIP(datagram, ip);
+    showPacket(datagram);
+}
+
 void DNS::addArecordIP(QByteArray &datagram, quint32 ip)
 {
     int datagramSize = datagram.size();
@@ -67,17 +82,17 @@ void DNS::showPacket(QByteArray &datagram)
     qDebug() << "----------";
     qDebug() << "ID" << header.id;          // data[0,1]
 
-//  qDebug() << "RD" << header.rd;          // data[2][7]
-//  qDebug() << "TC" << header.tc;          // data[2][6]
-//  qDebug() << "AA" << header.aa;          // data[2][5]
-//  qDebug() << "Opcode" << header.opcode;  // data[2][1,2,3,4]
-    qDebug() << "QR" << header.qr;          // data[2][0]
+//  qDebug() << "RD" << header.rd;          // data[2][0]
+//  qDebug() << "TC" << header.tc;          // data[2][1]
+//  qDebug() << "AA" << header.aa;          // data[2][2]
+//  qDebug() << "Opcode" << header.opcode;  // data[2][3,4,5,6]
+    qDebug() << "QR" << header.qr;          // data[2][7]
 
-    qDebug() << "rcode" << header.rcode;    // data[3][4,5,6,7]
-//  qDebug() << "cd" << header.cd;          // data[][]
-//  qDebug() << "ad" << header.ad;          // data[][]
-//  qDebug() << "z" << header.z;            // data[][]
-//  qDebug() << "RA" << header.ra;          // data[3][0]
+    qDebug() << "rcode" << header.rcode;    // data[3][0,1,2,3]
+//  qDebug() << "cd" << header.cd;          // data[3][4]
+//  qDebug() << "ad" << header.ad;          // data[3][5]
+//  qDebug() << "z" << header.z;            // data[3][6]
+//  qDebug() << "RA" << header.ra;          // data[3][7]
 
     qDebug() << "q_count" << header.q_count;        // data[4,5]
     qDebug() << "ans_count" << header.ans_count;    // data[6,7]
@@ -85,6 +100,23 @@ void DNS::showPacket(QByteArray &datagram)
     qDebug() << "add_count" << header.add_count;    // data[10,11]
 
     qDebug() << "++++++++++";
+    qDebug() << getName(datagram, 12, 0);
+    qDebug() << "----------";
+}
 
-
+QString DNS::getName(QByteArray &datagram, int index, int *end)
+{
+    QByteArray buffer;
+    char *data = datagram.data();
+    unsigned char count = data[index++];
+    while(count != 0 && (count & 0xc0) != 0xc0)
+    {
+        //qDebug() << "COUNT" << count;
+        buffer.append(&data[index], (int)count);
+        buffer.append('.');
+        index += count;
+        count = data[index++];
+    }
+    if(end !=0 ) *end = index;
+    return buffer;
 }

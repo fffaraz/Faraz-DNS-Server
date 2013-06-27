@@ -39,8 +39,6 @@ void Server::logRequest(QHostAddress &sender, quint16 senderPort, QByteArray &da
 
 void Server::sendResponse(QHostAddress &sender, quint16 senderPort, QByteArray &datagram)
 {
-    quint32 ip = QHostAddress("127.0.0.1").toIPv4Address();
-    dns.addArecordIP(datagram, ip);
-    dns.showPacket(datagram);
+    dns.process(datagram);
     udpsocket.writeDatagram(datagram, sender, senderPort);
 }
