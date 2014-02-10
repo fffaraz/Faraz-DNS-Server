@@ -1,17 +1,17 @@
-#include "server.h"
+#include "dnsserver.h"
 
-Server::Server(QObject *parent) :
+DnsServer::DnsServer(QObject *parent) :
     QObject(parent)
 {
     connect(&udpsocket, SIGNAL(readyRead()), this, SLOT(onRequest()));
 }
 
-int Server::start(quint16 port)
+int DnsServer::start(quint16 port, bool reuse)
 {
-    return udpsocket.bind(port, QUdpSocket::ReuseAddressHint);
+    return udpsocket.bind(port, reuse? QUdpSocket::ReuseAddressHint : QUdpSocket::DefaultForPlatform);
 }
 
-void Server::onRequest()
+void DnsServer::onRequest()
 {
     while(udpsocket.hasPendingDatagrams())
     {
@@ -21,12 +21,12 @@ void Server::onRequest()
         quint16 senderPort;
 
         udpsocket.readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
-        logRequest(sender, senderPort, datagram);
         sendResponse(sender, senderPort, datagram);
+        logRequest(sender, senderPort, datagram);
     }
 }
 
-void Server::logRequest(QHostAddress &sender, quint16 senderPort, QByteArray &datagram)
+void DnsServer::logRequest(QHostAddress& sender, quint16 senderPort, QByteArray& datagram)
 {
     static int counter = 0;
     QString strlog;
@@ -37,7 +37,7 @@ void Server::logRequest(QHostAddress &sender, quint16 senderPort, QByteArray &da
     dns.showPacket(datagram);
 }
 
-void Server::sendResponse(QHostAddress &sender, quint16 senderPort, QByteArray &datagram)
+void DnsServer::sendResponse(QHostAddress& sender, quint16 senderPort, QByteArray& datagram)
 {
     dns.process(datagram);
     udpsocket.writeDatagram(datagram, sender, senderPort);

@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core network
-
 QT       -= gui
 
 TARGET = faraz-dns-server
@@ -14,12 +13,11 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
-    server.cpp \
-    dns.cpp
+    dns.cpp \
+    dnsserver.cpp
 
 HEADERS += \
-    server.h \
     dns.h \
-    dns_packet.h
+    dns_packet.h \
+    dnsserver.h

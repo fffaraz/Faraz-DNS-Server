@@ -1,17 +1,20 @@
+#include <iostream>
 #include <QCoreApplication>
-#include <QDebug>
-#include <server.h>
+#include <dnsserver.h>
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    Server server;
-    bool res = server.start(53);
-    if(res)
-        qDebug() << "OK";
+    DnsServer server;
+    bool r = server.start();
+
+    if(r)
+        cout << "OK." << endl;
     else
-        qDebug() << "Failed.";
+        cout << "Failed." << endl;
 
     return a.exec();
 }

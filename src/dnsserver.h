@@ -1,5 +1,5 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef DNSSERVER_H
+#define DNSSERVER_H
 
 #include <QObject>
 #include <QDebug>
@@ -8,13 +8,14 @@
 
 #include "dns.h"
 
-class Server : public QObject
+class DnsServer : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Server(QObject *parent = 0);
-    int start(quint16 port);
+    explicit DnsServer(QObject *parent = 0);
+    int start(quint16 port = 53, bool reuse = false);
+
 
 private:
     QUdpSocket udpsocket;
@@ -32,4 +33,4 @@ public slots:
     
 };
 
-#endif // SERVER_H
+#endif // DNSSERVER_H
