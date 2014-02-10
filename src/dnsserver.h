@@ -1,8 +1,9 @@
 #ifndef DNSSERVER_H
 #define DNSSERVER_H
 
-#include <QObject>
-#include <QDebug>
+#include <iostream>
+using namespace std;
+
 #include <QHostAddress>
 #include <QUdpSocket>
 
@@ -14,23 +15,17 @@ class DnsServer : public QObject
 
 public:
     explicit DnsServer(QObject *parent = 0);
-    int start(quint16 port = 53, bool reuse = false);
-
+    int start(QHostAddress address = QHostAddress((quint32) 0), quint16 port = 53, bool reuse = false);
+    void setIP(QString ip);
 
 private:
+    quint32 giveout_ip;
     QUdpSocket udpsocket;
     DNS dns;
-    void logRequest(QHostAddress &sender, quint16 senderPort, QByteArray &datagram);
-    void sendResponse(QHostAddress &sender, quint16 senderPort, QByteArray &datagram);
-    void responseIP(QByteArray &datagram, quint32 ip);
+    void logRequest(QHostAddress &sender, quint16 senderPort);
 
 private slots:
     void onRequest();
-    
-signals:
-    
-public slots:
-    
 };
 
 #endif // DNSSERVER_H

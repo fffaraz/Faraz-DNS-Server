@@ -7,8 +7,10 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
     DnsServer server;
+
+    if(argc > 1) server.setIP(argv[1]);
+
     bool r = server.start();
 
     if(r)
